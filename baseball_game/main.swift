@@ -54,20 +54,22 @@ class BaseballGame{
     
     // 게임할 유저에게 숫자3개 입력받기
     func getNumber() -> [Int]? {
-        print("세 자리 숫자를 입력하세요 (각 숫자는 1-9 사이, 중복 없이): ", terminator: "")
+        print("세 자리 숫자를 입력하세요 (각 숫자는 0-9 사이, 중복 없이, 0은 맨 앞에 사용 불가!): ", terminator: "")
         if let input = readLine()?.compactMap({Int(String($0))}) , input.count == 3 {
-            //print(input)
-            return input
+            if Set(input).count == 3 && input[0] != 0{
+                return input
+            }
         }
         print("잘못된 입력입니다. 다시 입력하세요.")
         return nil
     }
     
-    // BaseballGame 정답 만들기 -> 중복이 없어야함으로 크기가 3인 Set 데이터타입에 1~9까지 랜덤 수 배치
+    // BaseballGame 정답 만들기 -> 중복이 없어야함으로 크기가 3인 Set 데이터타입에 1~9까지 랜덤 수 배치 -> Lv3 0추가 대신 맨앞에 , 중복 사용 역시 불가
     func makeAnswer() -> [Int] {
         var answers = Set<Int>()
+        answers.insert(Int.random(in: 1...9))
         while answers.count < 3 {
-            answers.insert(Int.random(in: 1...9))
+            answers.insert(Int.random(in: 0...9))
         }
         print("정답:\(answers)")
         return Array(answers)
