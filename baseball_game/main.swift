@@ -19,8 +19,8 @@ class BaseballGame{
         print("baseball game start")
         
         while true {
-            //guard let numbers = getNumber() else { continue}
-            let numbers = getNumber()!
+            guard let numbers = getNumber() else { continue} // 옵셔널 바인딩으로 값이 있을 경우에만 while문 밑으로 아니면 다시 위로
+            //let numbers = getNumber()!
             let result = checkAnswer(numbers: numbers, answer: answer)
             
             temp += 1 // 시도한 횟수를 ++
