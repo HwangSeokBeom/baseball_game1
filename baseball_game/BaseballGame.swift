@@ -6,8 +6,13 @@
 //
 import Foundation
 
+protocol BaseballGameDelegate {
+    func start()
+}
 
-class GameStart {
+class BaseballGame {
+    
+    var delegate: BaseballGameDelegate?
     
     func start(){
         
@@ -52,6 +57,9 @@ class GameStart {
         if let input = readLine()?.compactMap({Int(String($0))}) , input.count == 3 {
             if Set(input).count == 3 && input[0] != 0{
                 return input
+            }
+            else if input[0] == 0 { //
+                delegate?.start()
             }
         }
         print("잘못된 입력입니다. 다시 입력하세요.")

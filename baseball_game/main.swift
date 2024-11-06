@@ -7,14 +7,18 @@
 
 import Foundation
 
-// BaseballGame 클래스 구현
-class MainApp{
+
+
+class Main: BaseballGameDelegate {
     
     var isRunning = true
     let baseballGame = BaseballGame()
     
-    func start() {
+    init() {
+        baseballGame.delegate = self
+    }
         
+    func start() {
         while isRunning {
             print("------------------------------------------------------------")
             print("             환영합니다 ! 원하시는 번호를 입력해주세요.")
@@ -38,8 +42,7 @@ class MainApp{
         }
     }
 }
-
-let app = MainApp()
+let app = Main()
 app.start()
 
 
