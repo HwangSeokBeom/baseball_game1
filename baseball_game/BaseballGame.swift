@@ -7,7 +7,9 @@
 import Foundation
 
 
-class GameStart {
+class BaseballGame {
+    
+    var cancelGameHandler: (() -> Void)?
     
     func start(){
         
@@ -52,6 +54,9 @@ class GameStart {
         if let input = readLine()?.compactMap({Int(String($0))}) , input.count == 3 {
             if Set(input).count == 3 && input[0] != 0{
                 return input
+            }
+            else if input[0] == 0{
+                cancelGameHandler?()
             }
         }
         print("잘못된 입력입니다. 다시 입력하세요.")

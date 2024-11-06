@@ -8,10 +8,16 @@
 import Foundation
 
 // BaseballGame 클래스 구현
-class MainApp{
+class Main{
     
     var isRunning = true
     let baseballGame = BaseballGame()
+    
+    init(){
+        baseballGame.cancelGameHandler = { [weak self] in
+            self?.start()
+        }
+    }
     
     func start() {
         
@@ -39,7 +45,7 @@ class MainApp{
     }
 }
 
-let app = MainApp()
+let app = Main()
 app.start()
 
 
