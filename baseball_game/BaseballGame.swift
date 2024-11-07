@@ -6,30 +6,45 @@
 //
 import Foundation
 
+protocol BaseballGameDelegate {
+    func start()
+    var isRunning: Bool { get }
+}
 
 class BaseballGame {
     
-    var cancelGameHandler: (() -> Void)?
+    let record = saveRecord()
+    
+//    var cancelGameHandler: (() -> Void)?
+    
+    var delegate: BaseballGameDelegate?
     
     func start(){
         
         let answer = makeAnswer()
+        print(answer)
+        let userName: String = getUserName()!.joined(separator: "")
+        print("\(String(describing: userName))님 게임을 시작합니다.", terminator: "\n")
+        var count = 0
         
-        while true {
+        while delegate!.isRunning {
             
-            guard let numbers = getNumber() else { continue} // 옵셔널 바인딩으로 값이 있을 경우에만 while문 밑으로 아니면 다시 위로
+            guard let numbers = getNumber() else { continue}
             //let numbers = getNumber()!
+            count += 1
             let result = checkAnswer(numbers: numbers, answer: answer)
             
             if result.strikes == 3 { // strikes 가 3이면 정답 !
                 print("strike 3! you win!")
+                print("게임이 기록됩니다.")
+                record.save(userName: userName ,isWin: true, count: count)
                 break
             }
-            else if result.strikes == 0 && result.balls == 0 { // 0 strike, 0 ball 이면 out !
+            else if result.strikes == 0 && result.balls == 0 {
                 print("out!")
             }
             else{
-                print("strikes: \(result.strikes), balls: \(result.balls)") // 둘 다 아니면 strikes 와 balls 의 값을 출력
+                print("strikes: \(result.strikes), balls: \(result.balls)") 
             }
         }
     }
@@ -48,22 +63,25 @@ class BaseballGame {
         return (strikes: s, balls: b)
     }
     
-    // 게임할 유저에게 숫자3개 입력받기
+
     func getNumber() -> [Int]? {
-        print("세 자리 숫자를 입력하세요 (각 숫자는 0-9 사이, 중복 없이, 0은 맨 앞에 사용 불가!): ", terminator: "")
+        print("'000'을 입력하면 게임을 포기합니다!", terminator: "\n")
+        print("------- 각 숫자는 0-9 사이, 중복 없이, 0은 맨 앞에 사용 불가 ------- ", terminator: "\n")
+        print("세 자리 숫자를 입력하세요:", terminator: "")
         if let input = readLine()?.compactMap({Int(String($0))}) , input.count == 3 {
             if Set(input).count == 3 && input[0] != 0{
                 return input
             }
-            else if input[0] == 0{
-                cancelGameHandler?()
+            else if input == [0,0,0]{
+                //cancelGameHandler?()
+                delegate?.start()
             }
         }
         print("잘못된 입력입니다. 다시 입력하세요.")
         return nil
     }
     
-    // BaseballGame 정답 만들기 -> 중복이 없어야함으로 크기가 3인 Set 데이터타입에 1~9까지 랜덤 수 배치 -> Lv3 0추가 대신 맨앞에 , 중복 사용 역시 불가
+    
     func makeAnswer() -> [Int] {
         var answers = Set<Int>()
         answers.insert(Int.random(in: 1...9))
@@ -71,5 +89,15 @@ class BaseballGame {
             answers.insert(Int.random(in: 0...9))
         }
         return Array(answers)
+    }
+    
+    
+    func getUserName() -> [String]? {
+        print("당신의 이름은?: ", terminator: "")
+        if let input = readLine()?.compactMap({String($0)}) {
+            return input
+        }
+        print("잘못된 입력입니다. 다시 입력하세요.")
+        return nil
     }
 }
