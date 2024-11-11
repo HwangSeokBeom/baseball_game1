@@ -62,5 +62,5 @@
       
 #### 개발 환경
 
- - Version: Swift 6
+ - Version: Swift 5
  - IDE: Xcode 16.1
